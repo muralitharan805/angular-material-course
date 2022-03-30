@@ -1,2 +1,86 @@
+<mat-sidenav-container class="example-container" fullscreen>
+  <mat-sidenav #sidenav>
+    <mat-nav-list (click)="sidenav.close()">
+      <a
+        mat-list-item
+        [routerLink]="['/']"
+        routerLinkActive="router-link-active"
+      >
+        <mat-icon> library_books </mat-icon>
+        <span>Courses</span>
+      </a>
+      <a
+        mat-list-item
+        [routerLink]="['/about']"
+        routerLinkActive="router-link-active"
+      >
+        <mat-icon> library_books </mat-icon>
+        <span>about</span>
+      </a>
+      <a
+        mat-list-item
+        [routerLink]="['courses/:id']"
+        routerLinkActive="router-link-active"
+      >
+        <mat-icon> library_books </mat-icon>
+        <span>Register</span>
+      </a>
 
+      <a
+        mat-list-item
+        [routerLink]="['courses/:id']"
+        routerLinkActive="router-link-active"
+      >
+        <mat-icon> library_books </mat-icon>
+        <span>Login</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <!-- <mat-sidenav-content>Main content</mat-sidenav-content> -->
+  <mat-toolbar color="primary">
+    <!-- <span>Title</span> -->
+    <button mat-icon-button (click)="sidenav.open()">
+      <mat-icon class="mat-18">menu</mat-icon>
+    </button>
 
+    <a
+      mat-button
+      (mouseover)="menuTrigger.openMenu()"
+      #menuTrigger="matMenuTrigger"
+      [matMenuTriggerFor]="dropdown"
+      >Screens</a
+    >
+
+    <mat-menu #dropdown [overlapTrigger]="false">
+      <span (mouseleave)="menuTrigger.closeMenu()">
+        <button
+          mat-menu-item
+          [routerLink]="['/']"
+          routerLinkActive="router-link-active"
+        >
+          Courses
+        </button>
+        <button
+          mat-menu-item
+          [routerLink]="['/']"
+          routerLinkActive="router-link-active"
+        >
+          About
+        </button>
+      </span>
+    </mat-menu>
+    <a mat-button>
+      <mat-icon class="mat-18">person_add</mat-icon>
+      Register
+    </a>
+
+    <a mat-button>
+      <mat-icon class="mat-18">account_circle</mat-icon>
+      Login
+    </a>
+  </mat-toolbar>
+
+  <mat-sidenav-container>
+    <router-outlet></router-outlet>
+  </mat-sidenav-container>
+</mat-sidenav-container>
