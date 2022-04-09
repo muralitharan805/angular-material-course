@@ -18,6 +18,7 @@ import {
   tap,
   delay,
   catchError,
+  finalize,
 } from "rxjs/operators";
 import { merge, fromEvent, throwError } from "rxjs";
 import { Lesson } from "../model/lesson";
@@ -30,7 +31,13 @@ import { Lesson } from "../model/lesson";
 export class CourseComponent implements OnInit, AfterViewInit {
   course: Course;
 
+  @ViewChild(MatPaginator)
+  pagination: MatPaginator;
+
+  @ViewChild(MatSort)
+  matSort: MatSort;
   lessons: Lesson[] = [];
+  loading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,8 +52,15 @@ export class CourseComponent implements OnInit, AfterViewInit {
   }
 
   loadLessonsPage() {
+    this.loading = true;
     this.coursesService
-      .findLessons(this.course.id, "asc", 0, 3)
+      .findLessons(
+        this.course.id,
+        this.matSort?.direction ?? "asc",
+        this.pagination?.pageIndex ?? 0,
+        this.pagination?.pageSize ?? 3,
+        this.matSort?.active ?? "seqNo"
+      )
       .pipe(
         tap((lessons) => (this.lessons = lessons)),
         catchError((err) => {
@@ -54,10 +68,16 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
           alert("err loading lessons api");
           return throwError(err);
-        })
+        }),
+        finalize(() => (this.loading = false))
       )
       .subscribe();
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() {
+    this.matSort.sortChange.subscribe(() => this.pagination.pageIndex == 0);
+    merge(this.matSort.sortChange, this.pagination.page)
+      .pipe(tap(() => this.loadLessonsPage()))
+      .subscribe();
+  }
 }
